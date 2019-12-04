@@ -5,15 +5,27 @@ namespace MazeSolverByPaulius
 {
     public static class Logger
     {
-        public static void Log()
-        {
-            var fileName = "Log.txt";
-            var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            var fullName = Path.Combine(desktopPath, fileName);
+        private static readonly string FileName = "Log.txt";
+        private static readonly string DesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        private static readonly string FullName = Path.Combine(DesktopPath, FileName);
 
-            if (!File.Exists(fullName))
+        public static void CreateLogFile()
+        {
+            if (File.Exists(FullName)) File.Delete(FullName);
+
+            using (var streamWriter = new StreamWriter(FullName, false))
             {
+                streamWriter.Write(string.Empty);
             }
+        }
+
+        public static void WriteToLogFile(string outputLine)
+        {
+            if (File.Exists(FullName))
+                using (var streamWriter = new StreamWriter(FullName, true))
+                {
+                    streamWriter.WriteLine(outputLine);
+                }
         }
     }
 }

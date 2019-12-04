@@ -132,7 +132,7 @@ namespace MazeSolverByPaulius
                 for (var j = 0; j < width; j++)
                 {
                     if (history?.FirstOrDefault(o => o[0].Equals(i) && o[1].Equals(j)) != null)
-                        PrintMazeElement(2);
+                        PrintMazeElement((int) Elements.Player);
                     else
                         PrintMazeElement(maze[i, j]);
 
@@ -174,6 +174,9 @@ namespace MazeSolverByPaulius
         {
             Console.Write("Moves:\n");
 
+            Logger.CreateLogFile();
+
+            var stepCount = 0;
             for (var i = 0; i < history.Count - 1; i++)
             {
                 var xFrom = history[i][0] + 1;
@@ -182,10 +185,31 @@ namespace MazeSolverByPaulius
                 var xTo = history[i + 1][0] + 1;
                 var yTo = history[i + 1][1] + 1;
 
-                Console.WriteLine($"X={xFrom} Y={yFrom} ---> X={xTo} Y={yTo}");
+                var outputString =
+                    $"{++stepCount}) X={xFrom} Y={yFrom} --> {GetDirection(history[i], history[i + 1])} --> X={xTo} Y={yTo}";
+
+                Console.WriteLine(outputString);
+                Logger.WriteToLogFile(outputString);
             }
 
             Console.WriteLine();
+        }
+
+        private static string GetDirection(int[] fromPoint, int[] toPoint)
+        {
+            if (fromPoint[0].Equals(toPoint[0]) && fromPoint[1] > toPoint[1])
+                return "to LEFT";
+
+            if (fromPoint[0].Equals(toPoint[0]) && fromPoint[1] < toPoint[1])
+                return "to RIGHT";
+
+            if (fromPoint[1].Equals(toPoint[1]) && fromPoint[0] > toPoint[0])
+                return "to TOP";
+
+            if (fromPoint[1].Equals(toPoint[1]) && fromPoint[0] < toPoint[0])
+                return "to BOTTOM";
+
+            return string.Empty;
         }
     }
 }
